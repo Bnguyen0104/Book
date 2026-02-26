@@ -8,18 +8,19 @@ public class Book {
 
     private String bookSummary;
 
-    private Year birthYear, deathYear;
+    private Year birthYear;
+    private Year deathYear;
     private boolean copyRight;
     private Locale bookLanguage;
 
     /**
      * Constructors
      * Create a default value when code is ran
-     *  Empty values for text fields
-     *  Increment by 1 for book values
-     *  null for years
-     *  true for copyright
-     *  English as language unless told otherwise
+     * Empty values for text fields
+     * Increment by 1 for book values
+     * null for years
+     * true for copyright
+     * English as language unless told otherwise
      */
     public Book() {
         bookID++;
@@ -34,12 +35,24 @@ public class Book {
 
     /**
      * Parameter Constructor
-     * @param inputBookTitle Title of book
+     *
+     * @param inputBookTitle  Title of book
      * @param inputBookAuthor Author of book
      */
     public Book(String inputBookTitle, String inputBookAuthor) {
         this.bookTitle = inputBookTitle;
         this.bookAuthor = inputBookAuthor;
+    }
+
+    public Book(Book other) {
+        this.bookID = other.bookID;
+        this.bookTitle = other.bookTitle;
+        this.bookAuthor = other.bookAuthor;
+        this.copyRight = other.copyRight;
+        this.bookSummary = other.bookSummary;
+        this.birthYear = other.birthYear;
+        this.deathYear = other.deathYear;
+        this.bookLanguage = other.bookLanguage;
     }
 
     //Setters
@@ -203,6 +216,17 @@ public class Book {
         return bookLanguage;
     }
 
+    public boolean equals(Book other) {
+        if (other == null) {
+            return false;
+        }
+        if (other == this) {
+            return true;
+        }
+        boolean sameAuthor = (this.bookAuthor == null && other.bookAuthor == null) || (this.bookAuthor != null && this.bookAuthor.equals(other.bookAuthor));
+        return sameAuthor;
+    }
+
     /**
      * @return Book's Language in String human readable format
      */
@@ -212,41 +236,42 @@ public class Book {
 
     /**
      * Create HTML page to store book's info
+     *
      * @return A string containing markup for the Book's HTML page
      */
-    public String bookAsHTML() {
+    public static String bookAsHTML(Book book) {
         StringBuilder html = new StringBuilder();
 
         html.append("<!DOCTYPE html>\n");
         html.append("<html>\n");
         html.append("<head>\n");
         html.append("    <meta charset=\"UTF-8\">\n");
-        html.append("    <title>").append(bookTitle).append("</title>\n");
+        html.append("    <title>").append(book.bookTitle).append("</title>\n");
         html.append("</head>\n");
         html.append("<body>\n");
-        html.append("    <h1>Title: ").append(bookTitle).append("</h1>\n");
+        html.append("    <h1>Title: ").append(book.bookTitle).append("</h1>\n");
 
         // Author line with birth/death years if available
-        html.append("    <h2>Author: ").append(bookAuthor);
-        if (birthYear != null && deathYear != null) {
-            html.append(" [").append(birthYear).append(" - ").append(deathYear).append("]");
+        html.append("    <h2>Author: ").append(book.bookAuthor);
+        if (book.birthYear != null && book.deathYear != null) {
+            html.append(" [").append(book.birthYear).append(" - ").append(book.deathYear).append("]");
         }
         html.append("</h2>\n");
 
         // Copyright status
         html.append("    <p><strong>Copyright:</strong> ");
-        html.append(isCopyRight() ? "Active" : "Expired");
+        html.append(book.isCopyRight() ? "Active" : "Expired");
         html.append("</p>\n");
 
         // Language
         html.append("    <p><strong>Language:</strong> ");
-        html.append(languageAsString());
+        html.append(book.languageAsString());
         html.append("</p>\n");
 
         // Summary if available
-        if (bookSummary != null && !bookSummary.isEmpty()) {
+        if (book.bookSummary != null && !book.bookSummary.isEmpty()) {
             html.append("    <p><strong>Summary:</strong> ");
-            html.append(bookSummary);
+            html.append(book.bookSummary);
             html.append("</p>\n");
         }
 
@@ -271,6 +296,7 @@ public class Book {
 
     /**
      * Return the formatting to match specific requirements to how the layout should look
+     *
      * @return A formatted version with all of books info
      */
     public String toString() {

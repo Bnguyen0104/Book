@@ -61,5 +61,7 @@ public class Main{
         System.out.println(book1);
         System.out.println();
 
+        System.out.println("Book1 author same as Book2? " + book.equals(book1));
+
     }
 }
